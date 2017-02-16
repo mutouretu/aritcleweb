@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>文章列表</title>
+        <style>
+            .content{
+                height: 800px;
+                background-color: azure;
+            }
+            .title{
+{#                height: 100px;#}
+                font-size: x-large;
+            }
+
+            .tabinfo{
+                background-color: darkgray;
+                font-size: large;
+            }
+            .article-name{
+                width: 200px;
+                text-align: center;
+            }
+            .article-content{
+                width: 400px;
+                text-align: center;
+            }
+            .article-author{
+                width: 200px;
+                text-align: center;
+            }
+            .article-time{
+                width: 400px;
+                text-align: center;
+            }
+
+        </style>
+    </head>
+<body>
+    <div class="content">
+        <div class="title">
+            <p>文章列表</p>
+        </div>
+        <div class="table-content">
+            <table class="tabinfo">
+                <thead>
+                <tr>
+                    <th class="article-name">标题</th>
+                    <th class="article-content">内容</th>
+                    <th class="article-author">作者</th>
+                    <th class="article-time">发布时间</th>
+                </tr>
+                </thead>
+                <hr>
+                {% if articles %}
+                    {% for b in articles %}
+                        <tbody>
+                        <tr class="">
+                            <td class="article-name">
+                                <a href="{{ url_for('content',id=b.id) }}">{{ b.title}} </a>
+                            </td>
+                            <td class="article-content">{{ b.content|truncate(15)}}</td>
+                            <td class="article-author"><a href="{{ url_for('author',author = b.author ) }}">{{ b.author }}</td>
+                            <td class="article-time">{{ b.time }}</td>
+                        </tr>
+                        </tbody>
+                    {% endfor %}
+                {% endif %}
+
+            </table>
+        </div>
+        <div class="action">
+            <a href="{{ url_for('pub') }}">新建</a>
+            <a href="{{ url_for('list') }}">查看全部</a>
+        </div>
+
+
+    </div>
+
+
+</body>
+</html>

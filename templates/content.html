@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>简介</title>
+    </head>
+    <body>
+        <p>
+            {{ article.title }}<br>
+            作者：<a href="{{ url_for('author',author = article.author ) }}">{{ article.author }}</a><br>
+            标签：
+            {% for tag in article.tag %}
+            {{ tag }}
+            {% endfor %}
+            
+        </p>
+        <hr>
+        <p>
+            <a>{{ article.content }}</a>
+        </p>
+        <a href="{{ url_for('edit', id = article.id) }}" >编辑</a>
+        <a href="{{ url_for('delete', id = article.id) }}" >删除</a>
+        <a href="{{ url_for('list') }}" >返回</a>
+
+
+        </form>
+
+    </body>
+</html>
