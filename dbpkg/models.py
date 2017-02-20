@@ -1,14 +1,14 @@
-#coding: utf8
-from datetime import datetime
-from flask_sqlalchemy import SQLAlchemy
+#coding:utf8
 
-global db
-db = SQLAlchemy()
+from exts import db
+from datetime import datetime
 
 class Author(db.Model):
     __tablename__ = 'author'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     author = db.Column(db.String(100), nullable= False)
+    gender = db.Column(db.String(100), nullable= False)
+
 
     def __init__(self):
         pass
@@ -43,13 +43,3 @@ class Tag(db.Model):
 
     # 和article的关系，多对多
     articles = db.relationship('Article',secondary = article_tag)
-
-def installapp(app):
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqldb://root:Chiloon@localhost:3306/a?charset=utf8'
-    global db
-    db.init_app(app)
-    db.create_all()
-
-
-
-

@@ -1,6 +1,5 @@
 #coding:utf8
-from article_sql_table import db,Article,Author,Tag
-from datetime import datetime
+from models import *
 
 class Dboperator(object):
     def __init__(self, session):
@@ -98,7 +97,5 @@ class Dboperator(object):
         self.session.delete(artiobj)
         self.session.commit()
 
-# db_operator = Dboperator(db.session)
-def create_operator():
+def get_operator():
     return Dboperator(db.session)
-
