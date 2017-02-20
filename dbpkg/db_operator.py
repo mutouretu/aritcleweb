@@ -1,72 +1,5 @@
-#coding: utf8
-
-import sqlalchemy
-from sqlalchemy import create_engine,Column,Integer,String,Text,DateTime,ForeignKey,Table
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, relationship
-from datetime import datetime
-
-# 1. 创建数据库
-# 2. 准备连接数据库的数据
-HOSTNAME = '127.0.0.1'
-# HOSTNAME = 'deq-virtual-machine'
-PORT = '3306'
-DATABASE = 'articleDB'
-USERNAME = 'root'
-PASSWORD = 'Chiloon'
-CHARSET = 'charset=utf8'
-# DB_URI的格式：dialect（mysql/sqlite）+driver://username:password@host:port/database
-DB_URI = 'mysql+mysqldb://{}:{}@{}:{}/{}?{}'.format(USERNAME,PASSWORD,HOSTNAME,PORT,DATABASE,CHARSET)
-
-
-# engine
-engine = create_engine(DB_URI)
-Base = declarative_base(engine)
-
-
-
-class Author(Base):
-    __tablename__ = 'author'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    author = Column(String(100), nullable= False)
-
-
-
-article_tag = Table('article_tag', Base.metadata,
-    Column('article_id', Integer, ForeignKey('article.id'), nullable=False, primary_key= True),
-    Column('tag_id', Integer, ForeignKey('tags.id'), nullable=False, primary_key= True))
-
-class Article(Base):
-    __tablename__ = 'article'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    title = Column(String(50))
-    author = Column(String(50))
-    # author = Column(String(50), ForeignKey('author.author' , name=))
-    time = Column(DateTime, default=datetime.now())
-    content = Column(Text, nullable=False)
-
-    # 和author的关系，一对多
-    authorid = Column(Integer, ForeignKey('author.id'))
-    ref = relationship('Author', backref='bref')
-
-    # 和tag的关系，多对多
-    tags = relationship('Tag', secondary = article_tag)
-
-    def __repr__(self):
-        return '<User(id="%s",title="%s",author="%s",content="%s,time=%s")>'%(self.id,self.author,self.title, self.content,self.time)
-
-class Tag(Base):
-    __tablename__ = 'tags'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String(100), nullable= False)
-
-    # 和article的关系，多对多
-    articles = relationship('Article',secondary = article_tag)
-
-Base.metadata.create_all()
-session = sessionmaker(engine)()
-
-
+#coding:utf8
+from models import *
 
 class Dboperator(object):
     def __init__(self, session):
@@ -99,11 +32,6 @@ class Dboperator(object):
             artcobj.author = all_info['author']
             artcobj.time = datetime.now()
             self.unbound_manytomany(artcobj.tags)
-
-            #tag信息
-            # for t in all_info['tag']:
-            #     tagobj = self.session.query(Tag).filter_by(name=t).first() or Tag(name=t)
-            #     artcobj.tags.append(tagobj)
 
             artcobj.tags += [self.session.query(Tag).filter_by(name=t).first() or Tag(name=t) for t in all_info['tag']]
 
@@ -169,4 +97,5 @@ class Dboperator(object):
         self.session.delete(artiobj)
         self.session.commit()
 
-db_operator = Dboperator(session)
+def get_operator():
+    return Dboperator(db.session)
